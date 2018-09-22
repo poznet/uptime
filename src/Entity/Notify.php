@@ -35,6 +35,12 @@ class Notify
      */
     private $message;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Website", inversedBy="notifications")
+     * @ORM\JoinColumn(name="websiteid", referencedColumnName="id")
+     */
+    private $website;
+
     public function __construct()
     {
         $this->date=new \DateTime();
@@ -77,6 +83,18 @@ class Notify
     public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getWebsite(): ?Website
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(?Website $website): self
+    {
+        $this->website = $website;
 
         return $this;
     }

@@ -49,12 +49,18 @@ class Website
      */
     private $pings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Notify", mappedBy="website", orphanRemoval=true)
+     */
+    private $notifications;
+
 
     public function __construct()
     {
         $this->created_at = new \DateTime('now');
         $this->responseCode = new ArrayCollection();
         $this->pings = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +194,37 @@ class Website
             // set the owning side to null (unless already changed)
             if ($ping->getWebsiteId() === $this) {
                 $ping->setWebsiteId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notify[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notify $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setWebsite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notify $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getWebsite() === $this) {
+                $notification->setWebsite(null);
             }
         }
 

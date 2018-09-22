@@ -19,6 +19,7 @@ class SlackNotifyListener
 
     private $slackbot;
     private $em;
+    private $manger;
 
     public function __construct(EntityManagerInterface $entityManager,SlackBot $slackBot)
     {

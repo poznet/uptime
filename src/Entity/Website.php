@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\DateType;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -42,10 +44,17 @@ class Website
      */
     private $slack = false;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Ping", mappedBy="website", orphanRemoval=true)
+     */
+    private $pings;
+
 
     public function __construct()
     {
         $this->created_at = new \DateTime('now');
+        $this->responseCode = new ArrayCollection();
+        $this->pings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +128,68 @@ class Website
     public function setSlack(bool $slack): self
     {
         $this->slack = $slack;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ping[]
+     */
+    public function getResponseCode(): Collection
+    {
+        return $this->responseCode;
+    }
+
+    public function addResponseCode(Ping $responseCode): self
+    {
+        if (!$this->responseCode->contains($responseCode)) {
+            $this->responseCode[] = $responseCode;
+            $responseCode->setWebsiteId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponseCode(Ping $responseCode): self
+    {
+        if ($this->responseCode->contains($responseCode)) {
+            $this->responseCode->removeElement($responseCode);
+            // set the owning side to null (unless already changed)
+            if ($responseCode->getWebsiteId() === $this) {
+                $responseCode->setWebsiteId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Ping[]
+     */
+    public function getPings(): Collection
+    {
+        return $this->pings;
+    }
+
+    public function addPing(Ping $ping): self
+    {
+        if (!$this->pings->contains($ping)) {
+            $this->pings[] = $ping;
+            $ping->setWebsiteId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePing(Ping $ping): self
+    {
+        if ($this->pings->contains($ping)) {
+            $this->pings->removeElement($ping);
+            // set the owning side to null (unless already changed)
+            if ($ping->getWebsiteId() === $this) {
+                $ping->setWebsiteId(null);
+            }
+        }
 
         return $this;
     }

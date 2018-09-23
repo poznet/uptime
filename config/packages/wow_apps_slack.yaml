@@ -2,4 +2,9 @@
 # Documentation https://github.com/wow-apps/symfony-slack-bot/wiki
 wow_apps_slack:
     api_url: '%env(WOW_APPS_SLACK_BOT_API_URL)%'
-
+    quote_color:
+            default: "#607D8B"
+            info: "#2196F3"
+            warning: "#FF5722"
+            success: "#8BC34A"
+            danger: "#F44336"

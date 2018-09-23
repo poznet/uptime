@@ -55,7 +55,7 @@ class Ping
 
     public function getDate(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->data;
     }
 
     public function setDate(\DateTimeInterface $date): self

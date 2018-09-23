@@ -9,7 +9,10 @@
 namespace App\Listener;
 
 
+use App\Entity\Notify;
+use App\Entity\Ping;
 use App\Event\PingEvent;
+use App\Service\NotifyManager;
 use Doctrine\ORM\EntityManagerInterface;
 use WowApps\SlackBundle\DTO\SlackMessage;
 use WowApps\SlackBundle\Service\SlackBot;
@@ -17,25 +20,22 @@ use WowApps\SlackBundle\Service\SlackBot;
 class SlackNotifyListener
 {
 
-    private $slackbot;
-    private $em;
+
     private $manger;
 
-    public function __construct(EntityManagerInterface $entityManager,SlackBot $slackBot)
+    public function __construct(EntityManagerInterface $entityManager,SlackBot $slackBot, NotifyManager $manager)
     {
-        $this->slackbot = $slackBot;
-        $this->em=$entityManager;
+
+        $this->manger=$manager;
     }
 
     public function notify(PingEvent $event){
         $ping=$event->getPing();
         $status=$ping->getStatus();
 
-        if($status){
-            $msg= new SlackMessage();
-            $msg->setText('OK');
-            $msg->setSender('Powiadamiacz');
-            $this->slackbot->sendMessage($msg);
+        if($this->manger->resolveSlackNotification($ping)){
+            $this->manger->notify($ping,Notify::NOTIFY_CHANNEL_SLACK);
+        }else{
 
         }
 

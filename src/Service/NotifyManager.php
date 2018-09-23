@@ -13,31 +13,56 @@ use App\Entity\Notify;
 use App\Entity\Ping;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use WowApps\SlackBundle\DTO\SlackMessage;
+use WowApps\SlackBundle\Service\SlackBot;
 
 class NotifyManager
 {
     private $parameters;
     private $em;
+    private $slackbot;
 
     /**
      * NotifyManager constructor.
      * @param $parameters
      */
-    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $parameters)
+    public function __construct(EntityManagerInterface $entityManager, ParameterBagInterface $parameters, SlackBot $slackBot)
     {
         $this->em = $entityManager;
         $this->parameters = $parameters;
+        $this->slackbot = $slackBot;
     }
 
-    public function generateMessage(Ping $ping){
-        $website=$ping->getWebsite();
-        $msg=' Your website <a href="http://'.$website->getUrl.'">'.$website->getUrl.'</a> seems to be down';
+    public function generateMessage(Ping $ping)
+    {
+        $website = $ping->getWebsite();
+        $last=$this->em->getRepository("App:Ping")->findOneBy(['website'=>$ping->getWebsite(),'status'=>true],['id'=>'DESC']);
+
+        $msg = date("d-m-Y G:i:s").' - Your website seems to be down';
+
+        if($last instanceof Ping)
+            $msg.= ' since '.$last->getDate()->format("d-m-Y G:i:s");
+        return $msg;
+    }
+
+    public function notify(Ping $ping, $channel)
+    {
+        $n = new Notify();
+        $n->setChannel($channel);
+        $n->setMessage($this->generateMessage($ping));
+        $n->setWebsite($ping->getWebsite());
+        $this->em->persist($n);
+        $this->em->flush();
+
+        if ($channel == Notify::NOTIFY_CHANNEL_SLACK)
+            $this->sendSlacknotification($ping);
     }
 
 
+    public function resolveSlackNotification(Ping $ping)
+    {
 
-    public function resolveSlackNotification(Ping $ping){
-        return $this->resolveSlackNotificationTime($ping) && $this->resolveSlackNotificationTolerance($ping);
+         return $this->resolveSlackNotificationTime($ping) and $ping->getWebsite()->getSlack() ;
     }
 
     public function resolveSlackNotificationTime(Ping $ping)
@@ -49,8 +74,8 @@ class NotifyManager
 
         $data = $last->getDate();
         $now = new \DateTime();
-        $change = $data->diff($now);
-        $hours = $change->format('g');
+        $change = $now->diff($data);
+        $hours = $change->format('%h');
 
         if ($hours > $interval)
             return true;
@@ -58,22 +83,20 @@ class NotifyManager
 
     }
 
-    public function resolveSlackNotificationTolerance(Ping $ping)
-    {
-        $website = $ping->getWebsite();
-        $tolerance = $this->parameters->get('tolerance');
-        $www = $this->em->getRepository("App:Ping")->findBy(['website' => $website->getId()], ['id' => 'DESC'], $tolerance);
-        $status = true;
-        foreach ($www as $w) {
-            $status = $status && $w->getStatus();
-        }
-        if ($status === false) {
-            return true;
 
-        }
-        return false;
+
+    private function sendSlacknotification(Ping $ping)
+    {
+        $msg = new SlackMessage();
+        $msg->setText($this->generateMessage($ping));
+        $msg->setSender("Przypominacz ");
+        $msg->setShowQuote(true);
+        $msg->setQuoteType(SlackBot::QUOTE_DANGER);
+        $msg->setQuoteTitle($ping->getWebsite()->getUrl());
+        $msg->setQuoteTitleLink('https://'.$ping->getWebsite()->getUrl());
+        $this->slackbot->sendMessage($msg);
+
 
     }
-
 
 }

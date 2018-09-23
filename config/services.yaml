@@ -4,10 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    tolerance: 1
+    tolerance: 2
     notification_interval:
         default: 4
-        slack: 6
+        slack: 1
         email: 24
 
 
@@ -41,6 +41,5 @@ services:
 
 
     App\Listener\SlackNotifyListener:
-      arguments: ["@doctrine.orm.entity_manager","@wowapps.slackbot"]
       tags:
         - { name: kernel.event_listener, event: 'website.ping', method: 'notify' }

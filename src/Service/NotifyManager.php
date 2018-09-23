@@ -61,7 +61,7 @@ class NotifyManager
 
     public function resolveSlackNotification(Ping $ping)
     {
-
+         if($ping->getStatus()!=true)
          return $this->resolveSlackNotificationTime($ping) and $ping->getWebsite()->getSlack() ;
     }
 

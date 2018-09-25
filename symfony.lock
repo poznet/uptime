@@ -182,6 +182,9 @@
     "symfony/yaml": {
         "version": "v4.1.4"
     },
+    "twig/twig": {
+        "version": "v2.5.0"
+    },
     "wow-apps/symfony-slack-bot": {
         "version": "3.2",
         "recipe": {

@@ -8,26 +8,30 @@
 
 namespace App\Listener;
 
-
 use App\Event\PingEvent;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Notify;
+use App\Service\NotifyManager;
+
 
 class EmailNotifyListener
 {
-    private $em;
-    private $mailer;
-    private $twig;
 
-    public function __construct(EntityManagerInterface $entityManager,\Swift_Mailer $mailer,\Twig $twig)
+    private $manger;
+
+    public function __construct(NotifyManager $manager)
     {
-        $this->em = $entityManager;
-        $this->twig=$twig;
-        $this->mailer=$mailer;
+        $this->manger=$manager;
     }
 
     public function notify(PingEvent $event)
     {
         $ping=$event->getPing();
+
+        if($this->manger->resolveEmailNotification($ping)){
+            $this->manger->notify($ping,Notify::NOTIFY_CHANNEL_EMAIL);
+        }else{
+
+        }
 
 
     }

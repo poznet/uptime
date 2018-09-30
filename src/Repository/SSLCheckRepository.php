@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\SSL;
+use App\Entity\SSLCheck;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -12,11 +12,11 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method SSL[]    findAll()
  * @method SSL[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SSLRepository extends ServiceEntityRepository
+class SSLCheckRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, SSL::class);
+        parent::__construct($registry, SSLCheck::class);
     }
 
 //    /**

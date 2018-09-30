@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Helper\UrlHelper;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SSLRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\SSLCheckRepository")
  */
-class SSL
+class SSLCheck
 {
     /**
      * @ORM\Id()
@@ -17,9 +18,14 @@ class SSL
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
+ * @ORM\Column(type="string", length=255)
+ */
     private $url;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $name;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -34,7 +40,7 @@ class SSL
     /**
      * @ORM\Column(type="boolean", nullable=true)
      */
-    private $status;
+    private $sslstatus;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -54,13 +60,13 @@ class SSL
 
     public function getUrl(): ?string
     {
-        return $this->url;
+        return 'https://'.$this->url;
     }
 
     public function setUrl(string $url): self
     {
+        $url=UrlHelper::clearUrl($url);
         $this->url = $url;
-
         return $this;
     }
 
@@ -76,17 +82,7 @@ class SSL
         return $this;
     }
 
-    public function getStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(?bool $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
+    
 
     public function getValidTill(): ?\DateTimeInterface
     {
@@ -108,6 +104,30 @@ class SSL
     public function setCreatedAt(?\DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSslstatus(): ?bool
+    {
+        return $this->sslstatus;
+    }
+
+    public function setSslstatus(?bool $sslstatus): self
+    {
+        $this->sslstatus = $sslstatus;
 
         return $this;
     }

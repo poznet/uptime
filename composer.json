@@ -12,7 +12,10 @@
         "symfony/framework-bundle": "*",
         "symfony/maker-bundle": "^1.7",
         "symfony/swiftmailer-bundle": "^3.2",
+        "symfony/templating": "*",
+        "symfony/twig-bundle": "*",
         "symfony/yaml": "*",
+        "twig/twig": "^2.5",
         "wow-apps/symfony-slack-bot": "^3.2"
     },
     "require-dev": {

@@ -9,6 +9,8 @@ parameters:
         default: 4
         slack: 1
         email: 24
+    email_from: '%env(EMAIL_FROM)%'
+    email_to: '%env(EMAIL_TO)%'
 
     sslcheck:
         olderthan: 7
@@ -51,3 +53,4 @@ services:
         arguments: ['@doctrine.orm.default_entity_manager']
         tags:
           - { name: kernel.event_listener, event: 'ssl.check', method: 'onCheck' }
+

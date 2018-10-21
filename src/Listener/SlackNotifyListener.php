@@ -23,7 +23,7 @@ class SlackNotifyListener
 
     private $manger;
 
-    public function __construct(EntityManagerInterface $entityManager,SlackBot $slackBot, NotifyManager $manager)
+    public function __construct(NotifyManager $manager)
     {
 
         $this->manger=$manager;

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
-class AddWebsiteCommand extends ContainerAwareCommand
+class UptimeAddWebsiteCommand extends ContainerAwareCommand
 {
     private $url;
     private $email;

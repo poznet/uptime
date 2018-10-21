@@ -19,6 +19,21 @@ class SSLCheckRepository extends ServiceEntityRepository
         parent::__construct($registry, SSLCheck::class);
     }
 
+    public function findByLastCheckOlderThan($days)
+    {
+        $now=new \DateTime();
+        $now->modify('-'.$days.' day');
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.last_check < :date')
+            ->orWhere('s.last_check is NULL ')
+            ->setParameter('date', $now)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
+
 //    /**
 //     * @return SSL[] Returns an array of SSL objects
 //     */

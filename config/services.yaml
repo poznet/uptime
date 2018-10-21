@@ -10,6 +10,8 @@ parameters:
         slack: 1
         email: 24
 
+    sslcheck:
+        olderthan: 7
 
 services:
     # default configuration for services in *this* file
@@ -41,5 +43,11 @@ services:
 
 
     App\Listener\SlackNotifyListener:
-      tags:
-        - { name: kernel.event_listener, event: 'website.ping', method: 'notify' }
+        tags:
+          - { name: kernel.event_listener, event: 'website.ping', method: 'notify' }
+
+    App\Listener\SSLCheckListener:
+        class: App\Listener\SSlCheckListener
+        arguments: ['@doctrine.orm.default_entity_manager']
+        tags:
+          - { name: kernel.event_listener, event: 'ssl.check', method: 'onCheck' }

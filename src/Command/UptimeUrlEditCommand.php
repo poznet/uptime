@@ -9,18 +9,18 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class UptimeUrlDetailsCommand extends ContainerAwareCommand
+class UptimeUrlEditCommand extends ContainerAwareCommand
 {
-    protected static $defaultName = 'uptime:url:details';
+    protected static $defaultName = 'uptime:url:edit';
 
     protected function configure()
     {
         $this
-            ->setDescription('Show  details  about  website')
-            ->addArgument('id', InputArgument::OPTIONAL, 'Id of website')
-            ;
+            ->setDescription('Edits  configuration for given action')
+            ->addArgument('id', InputArgument::OPTIONAL, 'Argument description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -45,19 +45,18 @@ class UptimeUrlDetailsCommand extends ContainerAwareCommand
                 return false;
             }
         }
-        $io->writeln("Url : ".$website->getUrl());
-        $io->writeln("Email Notification : ".$website->getEmail());
-        $io->writeln("SlackNotification : ".$website->getSlack());
-        $io->writeln("Description : ".$website->getDescription());
-        $io->writeln("");
-        $io->writeln("Pings  (last 30) : ");
-        $io->writeln("");
-        $output->writeln("Data      | Stauts | Response | SSL ");
-        $pings=$em->getRepository("App:Ping")->findBy(['website'=>$website->getId()],['id'=>'DESC'],30);
-        foreach ($pings as $ping){
-            $output->writeln($ping->getData()->format("d-m-Y G:i:s").' | '.$ping->getStatus().' | '.$ping->getResponseCode().' | '.$ping->getSsl());
+        $io->writeln("You are editing : " . $website->getUrl().' ,  enter new  values  to edit ');
+        $data=$io->ask("URL : ",$website->getUrl());
+        $website->setUrl($data);
+        $data=$io->ask("Email  notification [0/1] : ",$website->getEmail());
+        $website->setEmail($data);
+        $data=$io->ask("Slack  notification [0/1] : ",$website->getSlack());
+        $website->setSlack($data);
+        $data=$io->ask("Description : ",$website->getDescription());
+        $website->setDescription($data);
 
-        }
+        $em->flush();
+        $io->writeln("Done...");
 
     }
 }

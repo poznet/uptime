@@ -31,7 +31,7 @@ class SslUrlShowCommand extends ContainerAwareCommand
         $io->writeln(' URL            |   STATUS  |    VALID TILL  ');
         foreach ($websites as $website){
             if($website instanceof SSLCheck)
-        $io->writeln($website->getUrl().'  |  '.$website->getSslstatus(). '  |  '.$website->getValidTill() );
+        $io->writeln($website->getUrl().'  |  '.$website->getSslstatus(). '  |  '.$website->getValidTill()->format("d-m-Y G:i:s") );
         }
         $io->writeln('DONE');
     }

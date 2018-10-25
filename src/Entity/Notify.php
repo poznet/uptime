@@ -12,6 +12,8 @@ class Notify
     CONST NOTIFY_CHANNEL_SLACK='slack';
     CONST NOTIFY_CHANNEL_EMAIL='email';
 
+    CONST NOTIFY_WHAT_UPTIME='uptime';
+    CONST NOTIFY_WHAT_SSL='ssl';
 
     /**
      * @ORM\Id()
@@ -34,6 +36,11 @@ class Notify
      * @ORM\Column(type="text")
      */
     private $message;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $what=self::NOTIFY_WHAT_UPTIME;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Website", inversedBy="notifications")
@@ -98,4 +105,22 @@ class Notify
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getWhat()
+    {
+        return $this->what;
+    }
+
+    /**
+     * @param mixed $what
+     */
+    public function setWhat($what)
+    {
+        $this->what = $what;
+    }
+
+
 }

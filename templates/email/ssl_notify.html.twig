@@ -1,0 +1,30 @@
+{% extends 'baseemail.twig.html' %}
+
+{% block tresc %}
+    <h2>Certyfikaty SSL niedziałające</h2>
+    <ul style="text-align: left;">
+        {% for ssl in ssls if ssl.sslstatus!=true %}
+            <li>
+                <a href="https://{{ ssl.url }}" style="color:#dd0000;text-decoration: none;font-weight:bold;">{{ ssl.url }}
+                </a> - ważny do : {{ ssl.ValidTill | date('d-m-Y G:i:s') }}
+            </li>
+
+        {% endfor %}
+    </ul>
+    <br/><br/>
+    <h2>Certyfikaty SSL aktywne</h2>
+    <ul style="text-align: left;">
+        {% for ssl in ssls if ssl.sslstatus==true %}
+            <li>
+                <a  href="https://{{ ssl.url }}" style="color:#00aa00;text-decoration: none;font-weight:bold;">{{ ssl.url }}
+                </a> - ważny do : {{ ssl.ValidTill | date('d-m-Y G:i:s') }} / {{ ssl.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    <br/><br/>
+
+{% endblock %}
+
+
+{% block temat %}
+{% endblock %}

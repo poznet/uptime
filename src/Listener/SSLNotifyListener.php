@@ -78,11 +78,11 @@ class SSLNotifyListener
 
     private function generateMessageForSlack()
     {
-        $msg = 'aaa';
+        $msg = '';
         $ssls = $this->em->getRepository("App:SSLCheck")->findAll();
         foreach ($ssls as $ssl) {
             if ($ssl->getSslstatus() != true) {
-                $msg .= '' . $ssl->getUrl() . '';
+                $msg .= '' . $ssl->getUrl() . ' <br/>';
             }
         }
         return $msg;

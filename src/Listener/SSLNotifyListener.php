@@ -66,7 +66,7 @@ class SSLNotifyListener
 
         if($this->slackbot->sendMessage($msg)){
             $notify = new Notify();
-            $notify->setChannel(Notify::NOTIFY_CHANNEL_Slack);
+            $notify->setChannel(Notify::NOTIFY_CHANNEL_SLACK);
             $notify->setDate(new \DateTime());
             $notify->setWhat(Notify::NOTIFY_WHAT_SSL);
             $notify->setMessage($this->generateMessageForSlack());
@@ -82,7 +82,7 @@ class SSLNotifyListener
         $ssls = $this->em->getRepository("App:SSLCheck")->findAll();
         foreach ($ssls as $ssl) {
             if ($ssl->getSslstatus() != true) {
-                $msg .= '' . $ssl->getUrl() . ' <br/>';
+                $msg .= '' . $ssl->getUrl() . ' \n';
             }
         }
         return $msg;

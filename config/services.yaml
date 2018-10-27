@@ -58,3 +58,9 @@ services:
         tags:
           - { name: kernel.event_listener, event: 'ssl.check', method: 'onCheck' }
 
+    App\Listener\SSLNotifyListener:
+        class: App\Listener\SSlNotifyListener
+#        arguments: ['@doctrine.orm.default_entity_manager','@twig','@swiftmailer.mailer.default']
+        tags:
+            - { name: kernel.event_listener, event: 'notify', method: 'onNotify' }
+
